@@ -1,7 +1,7 @@
 from app import app
 from flask import render_template, request, jsonify, flash
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
-import database_management as db_manage
+from app import database_management as db_manage
 
 app.config['JWT_SECRET_KEY'] = 'sekretne_haslo'
 jwt = JWTManager(app)
