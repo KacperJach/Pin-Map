@@ -10,6 +10,7 @@ jwt = JWTManager(app)
 @app.route('/')
 @app.route('/index')
 def index():
+    db_manage.create_db()
     return render_template('index.html')
 
 
