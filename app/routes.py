@@ -50,5 +50,5 @@ def register():
             db_manage.add_user(username, password)
             msg = 'You have successfully registered!'
 
-    return render_template('x.html', msg=msg)
+    return jsonify(msg, 200)
 
