@@ -1,20 +1,9 @@
 from app import app
-from flask import render_template, request, jsonify, flash
-from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
+from flask import request, jsonify
 from app import database_management as db_manage
 
-app.config['JWT_SECRET_KEY'] = 'sekretne_haslo'
-jwt = JWTManager(app)
 
-
-@app.route('/')
-@app.route('/index')
-def index():
-    db_manage.create_db()
-    return render_template('index.html')
-
-
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/api/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         data = request.get_json()
@@ -22,19 +11,19 @@ def login():
         password = data['password']
         result = db_manage.check_user_login(username, password)
         if result:
-            access_token = create_access_token(identity=username)
-            return jsonify(access_token=access_token), 200
+            return jsonify({"logged in": True, "user id": result[0]}), 201
+
         else:
-            return flash('User not existing')
+            return jsonify({"logged in": False}), 201
 
 
-@app.route('/get_users', methods=['GET'])
+@app.route('/api/get_users', methods=['GET'])
 def get_users():
     users = db_manage.get_users()
     return jsonify({'users': users}), 200
 
 
-@app.route('/register', methods=['GET', 'POST'])
+@app.route('/api/register', methods=['GET', 'POST'])
 def register():
     msg = ''
     if request.method == 'POST':
@@ -46,10 +35,44 @@ def register():
         result = db_manage.check_user_existing(username)
         if result:
             msg = 'User already exists!'
+            return jsonify({"register": False, 'msg': msg}), 201
 
         else:
             db_manage.add_user(username, password)
             msg = 'You have successfully registered!'
+            return jsonify({"register": True, 'msg': msg}), 201
 
-    return jsonify(msg, 200)
 
+@app.route('/api/get_pins', methods=['GET'])
+def get_pins():
+    pins = db_manage.get_pins()
+    return jsonify({'pins': pins}), 201
+
+
+@app.route('/api/add_pin', methods=['POST'])
+def add_pin():
+    if request.method == 'POST':
+        data = request.get_json()
+        user_id = data['user_id']
+        pin_name = data['name']
+        latitude = data['latitude']
+        longitude = data['longitude']
+        desc = data['description']
+
+        db_manage.add_pin(pin_name, user_id, latitude, longitude, desc)
+        msg = 'Pin added successfully!'
+        return jsonify({"pin added": True, 'msg': msg}), 201
+
+
+@app.route('/api/delete_pin/<pin_id>', methods=['DELETE'])
+def delete_pin(pin_id):
+
+    db_manage.delete_pin(pin_id)
+    msg = 'Pin deleted successfully!'
+    return jsonify({"pin deleted": True, 'msg': msg}), 201
+
+
+@app.route('/api/map/<user_id>', methods=['GET'])
+def get_user_pins(user_id):
+    pins = db_manage.get_user_pins(user_id)
+    return jsonify({'pins': pins}), 201
