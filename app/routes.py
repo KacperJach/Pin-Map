@@ -11,10 +11,10 @@ def login():
         password = data['password']
         result = db_manage.check_user_login(username, password)
         if result:
-            return jsonify({"logged in": True, "user id": result[0]}), 201
+            return jsonify({"logged_in": True, "user_id": result[0]}), 201
 
         else:
-            return jsonify({"logged in": False}), 201
+            return jsonify({"logged_in": False}), 201
 
 
 @app.route('/api/get_users', methods=['GET'])
