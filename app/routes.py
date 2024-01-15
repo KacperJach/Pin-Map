@@ -76,3 +76,19 @@ def delete_pin(pin_id):
 def get_user_pins(user_id):
     pins = db_manage.get_user_pins(user_id)
     return jsonify({'pins': pins}), 201
+
+
+@app.route('/api/edit_pin', methods=['PUT'])
+def edit_user_pin():
+    if request.method == 'PUT':
+        data = request.get_json()
+        user_id = data['user_id']
+        pin_id = data['pin_id']
+        pin_name = data['name']
+        latitude = data['latitude']
+        longitude = data['longitude']
+        desc = data['description']
+
+        db_manage.update_pin(pin_id, pin_name, user_id, latitude, longitude, desc)
+        msg = 'Pin edited successfully!'
+        return jsonify({"pin edited": True, 'msg': msg}), 201

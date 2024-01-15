@@ -104,7 +104,7 @@ def update_pin(pin_id, pin_name, user_id, latitude, longitude, desc):
     try:
         conn = make_connection()
         cur = conn.cursor()
-        query = 'UPDATE Pins SET Pin_Name=?, User_ID=?, Latitude=?, Longitude=?, Description=? WHERE ID=?)'
+        query = 'UPDATE Pins SET Pin_Name=?, User_ID=?, Latitude=?, Longitude=?, Description=? WHERE ID=?'
         cur.execute(query, (pin_name, user_id, latitude, longitude, desc, pin_id, ))
         conn.commit()
     except Exception as e:
