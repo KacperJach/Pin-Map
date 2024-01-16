@@ -100,24 +100,34 @@ def delete_pin(pin_id):
         print(e)
 
 
-def update_pin(pin_id, pin_name, user_id, latitude, longitude, desc):
+def update_pin(pin_id, pin_name, latitude, longitude, desc):
     try:
         conn = make_connection()
         cur = conn.cursor()
-        query = 'UPDATE Pins SET Pin_Name=?, User_ID=?, Latitude=?, Longitude=?, Description=? WHERE ID=?'
-        cur.execute(query, (pin_name, user_id, latitude, longitude, desc, pin_id, ))
+        query = 'UPDATE Pins SET Pin_Name=?, Latitude=?, Longitude=?, Description=? WHERE ID=?'
+        cur.execute(query, (pin_name, latitude, longitude, desc, pin_id, ))
         conn.commit()
     except Exception as e:
         print(e)
 
 
-def get_pins():
+def get_pins(user_id):
     try:
         conn = make_connection()
         cur = conn.cursor()
-        query = 'SELECT * FROM Pins'
-        cur.execute(query)
-        pins = cur.fetchall()
+        query = 'SELECT ID, Pin_Name, Latitude, Longitude, Description FROM Pins WHERE User_ID=?'
+        cur.execute(query, (user_id,))
+
+        pins = []
+        for row in cur.fetchall():
+            pin_id, name, latitude, longitude, description = row
+            pins.append({
+                "id": str(pin_id),
+                "name": str(name),
+                "latitude": latitude,
+                "longitude": longitude,
+                "description": description,
+            })
         return pins
     except Exception as e:
         print(e)
