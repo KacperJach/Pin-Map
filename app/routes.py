@@ -60,15 +60,16 @@ def add_pin():
         latitude = data.get('latitude')
         longitude = data.get('longitude')
         desc = data.get('description')
+        color = data.get('color')
 
-        db_manage.add_pin(pin_name, user_id, latitude, longitude, desc)
+        db_manage.add_pin(pin_name, user_id, latitude, longitude, desc, color)
         msg = 'Pin added successfully!'
         return jsonify({"pin_added": True, 'msg': msg}), 201
 
 
-@app.route('/api/delete_pin/<pin_id>', methods=['DELETE'])
-def delete_pin(pin_id):
-
+@app.route('/api/delete_pin', methods=['DELETE'])
+def delete_pin():
+    pin_id = request.args.get('pin_id')
     db_manage.delete_pin(pin_id)
     msg = 'Pin deleted successfully!'
     return jsonify({"pin_deleted": True, 'msg': msg}), 201
@@ -89,7 +90,8 @@ def edit_user_pin():
         latitude = data.get('latitude')
         longitude = data.get('longitude')
         desc = data.get('description')
+        color = data.get('color')
 
-        db_manage.update_pin(pin_id, pin_name, latitude, longitude, desc)
+        db_manage.update_pin(pin_id, pin_name, latitude, longitude, desc, color)
         msg = 'Pin edited successfully!'
         return jsonify({"pin edited": True, 'msg': msg}), 201

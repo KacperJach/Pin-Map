@@ -14,7 +14,7 @@ def create_db():
     # Stworzenie tabeli w bazie danych za pomocą sqlite3
     conn.execute('CREATE TABLE Users (ID INTEGER PRIMARY KEY AUTOINCREMENT, Username TEXT, Password TEXT)')
     conn.execute('CREATE TABLE Pins (ID INTEGER PRIMARY KEY AUTOINCREMENT, Pin_Name TEXT, User_ID INTEGER, Latitude '
-                 'REAL, Longitude REAL, Description TEXT)')
+                 'REAL, Longitude REAL, Description TEXT, Color TEXT)')
     cur = conn.cursor()
     cur.execute("INSERT INTO Users (Username,Password) VALUES ('admin','admin')")
     # Zakończenie połączenia z bazą danych
@@ -78,12 +78,12 @@ def check_user_existing(username):
         print(e)
 
 
-def add_pin(pin_name, user_id, latitude, longitude, desc):
+def add_pin(pin_name, user_id, latitude, longitude, desc, color):
     try:
         conn = make_connection()
         cur = conn.cursor()
-        query = 'INSERT INTO Pins (Pin_Name, User_ID, Latitude, Longitude, Description) VALUES (?, ?, ?, ?, ?)'
-        cur.execute(query, (pin_name, user_id, latitude, longitude, desc,))
+        query = 'INSERT INTO Pins (Pin_Name, User_ID, Latitude, Longitude, Description, Color) VALUES (?, ?, ?, ?, ?, ?)'
+        cur.execute(query, (pin_name, user_id, latitude, longitude, desc, color,))
         conn.commit()
     except Exception as e:
         print(e)
@@ -100,12 +100,12 @@ def delete_pin(pin_id):
         print(e)
 
 
-def update_pin(pin_id, pin_name, latitude, longitude, desc):
+def update_pin(pin_id, pin_name, latitude, longitude, desc, color):
     try:
         conn = make_connection()
         cur = conn.cursor()
-        query = 'UPDATE Pins SET Pin_Name=?, Latitude=?, Longitude=?, Description=? WHERE ID=?'
-        cur.execute(query, (pin_name, latitude, longitude, desc, pin_id, ))
+        query = 'UPDATE Pins SET Pin_Name=?, Latitude=?, Longitude=?, Description=?, Color=? WHERE ID=?'
+        cur.execute(query, (pin_name, latitude, longitude, desc, color, pin_id, ))
         conn.commit()
     except Exception as e:
         print(e)
@@ -115,18 +115,19 @@ def get_pins(user_id):
     try:
         conn = make_connection()
         cur = conn.cursor()
-        query = 'SELECT ID, Pin_Name, Latitude, Longitude, Description FROM Pins WHERE User_ID=?'
+        query = 'SELECT ID, Pin_Name, Latitude, Longitude, Description, Color FROM Pins WHERE User_ID=?'
         cur.execute(query, (user_id,))
 
         pins = []
         for row in cur.fetchall():
-            pin_id, name, latitude, longitude, description = row
+            pin_id, name, latitude, longitude, description, color = row
             pins.append({
                 "id": str(pin_id),
                 "name": str(name),
                 "latitude": latitude,
                 "longitude": longitude,
                 "description": description,
+                "color": color,
             })
         return pins
     except Exception as e:
