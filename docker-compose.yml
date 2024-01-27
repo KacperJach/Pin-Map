@@ -1,0 +1,12 @@
+version: '3'
+services:
+  backend:
+    image: flask
+    ports:
+      - "5000:5000"
+  frontend:
+    image: angular
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend

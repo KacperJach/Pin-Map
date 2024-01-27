@@ -1,0 +1,47 @@
+<h1 mat-dialog-title>Edit pin</h1>
+<div mat-dialog-content>
+  <div class="input-container">
+    <form [formGroup]="editPinFormGroup">
+      <mat-form-field appearance="outline" class="formField">
+        <mat-label>Name</mat-label>
+        <mat-error>You must enter a value</mat-error>
+        <input matInput required formControlName="name">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="formField">
+        <mat-label>Latitude</mat-label>
+        <mat-error> You must enter a value</mat-error>
+        <input matInput formControlName="latitude">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="formField">
+        <mat-label>Longitude</mat-label>
+        <mat-error> You must enter a value</mat-error>
+        <input matInput formControlName="longitude">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="formField">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description"></textarea>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Pin color</mat-label>
+        <input matInput formControlName="inputCtrl" />
+        <ngx-colors
+          matSuffix
+          ngx-colors-trigger
+          formControlName="pickerCtrl"
+        ></ngx-colors>
+        <mat-error *ngIf="this.editPinFormGroup.controls['inputCtrl'].hasError('invalidColor')">
+          The color is invalid.
+        </mat-error>
+      </mat-form-field>
+    </form>
+  </div>
+</div>
+<div mat-dialog-actions class="actions">
+  <button mat-button (click)="closeDialog(false)">Cancel</button>
+  <button mat-button (click)="submit()" [disabled]="!editPinFormGroup.valid" color="primary">Submit</button>
+</div>
+
